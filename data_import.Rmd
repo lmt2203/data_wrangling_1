@@ -15,11 +15,25 @@ library(haven)
 
 Read in the litters dataset. 
 
-```{r}
+```{r litters_dataset}
 litters_df = read_csv("./data/FAS_litters.csv")
 litters_df = janitor::clean_names(litters_df)
+names(litters_df)
 ```
 
+Read in the pups dataset.
+
+```{r pups_dataset}
+pups_df = read_csv("data/FAS_pups.csv")
+janitor::clean_names(pups_df)
+pups_data = read_csv("./data/FAS_pups.csv", 
+                     col_types = cols(Sex = col_character())
+                     )
+pups_data
+pups_data = read_csv("data/FAS_pups.csv", 
+                     col_types = "cciiii")
+pups_data
+```
 
 ## Take a look at the data
 
