@@ -119,4 +119,7 @@ mutate (
 )
 ```
 
+## `arrange` - putting things in order
+
+
 
