@@ -126,7 +126,7 @@ arrange(litters_df, pups_born_alive)
 arrange(litters_df, gd0_weight, gd18_weight)
 ```
 
-## `%>%`
+## Pipe operator to tie together sequence of actions `%>%`
 
 This is one option - would NOT recommend
 ```{r}
@@ -134,7 +134,7 @@ litters_data_raw = read_csv("data/FAS_litters.csv")
 litters_clean_name = janitor::clean_names(litters_data_raw)
 litters_data_selected = select(litters_clean_name, -pups_survive)
 litters_mutated = mutate (litters_data_selected, wt_gain = gd18_weight - gd0_weight)
-litters_without_missing_data = drop_na((litters_mutated, gd0_weight)
+litters_without_missing_data = drop_na(litters_mutated, gd0_weight)
 ```
 
 USE THE PIPE OPERATOR INSTEAD!!!

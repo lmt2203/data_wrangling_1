@@ -371,3 +371,81 @@ mutate (
     ## 3 con7  #5/5/3/83/3-3       26          41.4          19               6
     ## # … with 46 more rows, and 3 more variables: pups_dead_birth <int>,
     ## #   pups_survive <int>, wt_gain <dbl>
+
+## `arrange` - putting things in order
+
+``` r
+arrange(litters_df, pups_born_alive)
+```
+
+    ## # A tibble: 49 x 8
+    ##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##   <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ## 1 Con7  #85                 19.7        34.7          20               3
+    ## 2 Low7  #111                25.5        44.6          20               3
+    ## 3 Low8  #4/84               21.8        35.2          20               4
+    ## # … with 46 more rows, and 2 more variables: pups_dead_birth <int>,
+    ## #   pups_survive <int>
+
+``` r
+arrange(litters_df, gd0_weight, gd18_weight)
+```
+
+    ## # A tibble: 49 x 8
+    ##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##   <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ## 1 Mod7  #59                 17          33.4          19               8
+    ## 2 Mod7  #62                 19.5        35.9          19               7
+    ## 3 Con7  #85                 19.7        34.7          20               3
+    ## # … with 46 more rows, and 2 more variables: pups_dead_birth <int>,
+    ## #   pups_survive <int>
+
+## Pipe operator to tie together sequence of actions `%>%`
+
+This is one option - would NOT recommend
+
+``` r
+litters_data_raw = read_csv("data/FAS_litters.csv")
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Group = col_character(),
+    ##   `Litter Number` = col_character(),
+    ##   `GD0 weight` = col_double(),
+    ##   `GD18 weight` = col_double(),
+    ##   `GD of Birth` = col_double(),
+    ##   `Pups born alive` = col_double(),
+    ##   `Pups dead @ birth` = col_double(),
+    ##   `Pups survive` = col_double()
+    ## )
+
+``` r
+litters_clean_name = janitor::clean_names(litters_data_raw)
+litters_data_selected = select(litters_clean_name, -pups_survive)
+litters_mutated = mutate (litters_data_selected, wt_gain = gd18_weight - gd0_weight)
+litters_without_missing_data = drop_na(litters_mutated, gd0_weight)
+```
+
+USE THE PIPE OPERATOR INSTEAD\!\!\!
+
+``` r
+litters_df = 
+  read_csv("data/FAS_litters.csv") %>% 
+  janitor::clean_names() %>% 
+  select(-pups_survive) %>% 
+  mutate(wt_gain = gd18_weight - gd0_weight) %>% 
+  drop_na(gd0_weight)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Group = col_character(),
+    ##   `Litter Number` = col_character(),
+    ##   `GD0 weight` = col_double(),
+    ##   `GD18 weight` = col_double(),
+    ##   `GD of Birth` = col_double(),
+    ##   `Pups born alive` = col_double(),
+    ##   `Pups dead @ birth` = col_double(),
+    ##   `Pups survive` = col_double()
+    ## )
