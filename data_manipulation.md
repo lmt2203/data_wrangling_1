@@ -337,3 +337,37 @@ filter(litters_df, group %in% c("Con7", "Mod8"), gd_of_birth == 20)
     ## 8 Mod8  #2/95/2             28.5        44.5          20               9
     ## 9 Mod8  #82/4               33.4        52.7          20               8
     ## # … with 2 more variables: pups_dead_birth <int>, pups_survive <int>
+
+## `mutate`- allows you to modify existing variables or create new variables
+
+``` r
+mutate(litters_df, wt_gain = gd18_weight - gd0_weight)
+```
+
+    ## # A tibble: 49 x 9
+    ##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##   <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ## 1 Con7  #85                 19.7        34.7          20               3
+    ## 2 Con7  #1/2/95/2           27          42            19               8
+    ## 3 Con7  #5/5/3/83/3-3       26          41.4          19               6
+    ## # … with 46 more rows, and 3 more variables: pups_dead_birth <int>,
+    ## #   pups_survive <int>, wt_gain <dbl>
+
+adding multiple variables at the same time
+
+``` r
+mutate (
+  litters_df,
+  wt_gain = gd18_weight - gd0_weight,
+  group = str_to_lower(group)
+)
+```
+
+    ## # A tibble: 49 x 9
+    ##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##   <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ## 1 con7  #85                 19.7        34.7          20               3
+    ## 2 con7  #1/2/95/2           27          42            19               8
+    ## 3 con7  #5/5/3/83/3-3       26          41.4          19               6
+    ## # … with 46 more rows, and 3 more variables: pups_dead_birth <int>,
+    ## #   pups_survive <int>, wt_gain <dbl>
