@@ -378,8 +378,8 @@ summary {
 <pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
-<div id="pivot_longer" class="section level2">
-<h2><code>pivot_longer</code></h2>
+<div id="pivot_longer---wide-format-to-long-format" class="section level2">
+<h2><code>pivot_longer</code> - wide format to long format</h2>
 <p>Load the PULSE data</p>
 <pre class="r"><code>pulse_data =
   haven::read_sas(&quot;data/public_pulse_data.sas7bdat&quot;) %&gt;% 
@@ -405,6 +405,27 @@ summary {
   ) %&gt;% 
   relocate(id, visit) %&gt;% 
   mutate(visit = recode (visit, &quot;bl&quot; = &quot;00m&quot;))</code></pre>
+</div>
+<div id="pivot_wider" class="section level2">
+<h2><code>pivot_wider</code></h2>
+<p>Make up some data!</p>
+<pre class="r"><code>analysis_result = 
+  tibble(
+    group = c(&quot;treatment&quot;, &quot;treatment&quot;, &quot;placebo&quot;, &quot;placebo&quot;),
+    time = c(&quot;pre&quot;, &quot;post&quot;, &quot;pre&quot;, &quot;post&quot;),
+    mean = c(4, 8, 2, 1.5)
+  )
+
+analysis_result %&gt;% 
+  pivot_wider(
+    names_from = &quot;time&quot;,
+    values_from = &quot;mean&quot;
+  )</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   group       pre  post
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1 treatment     4   8  
+## 2 placebo       2   1.5</code></pre>
 </div>
 
 

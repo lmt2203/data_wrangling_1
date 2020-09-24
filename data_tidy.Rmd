@@ -9,7 +9,7 @@ output: html_document
 library(tidyverse)
 ```
 
-## `pivot_longer` 
+## `pivot_longer` - wide format to long format
 
 Load the PULSE data
 
@@ -46,5 +46,24 @@ pulse_data =
   ) %>% 
   relocate(id, visit) %>% 
   mutate(visit = recode (visit, "bl" = "00m"))
+```
+
+## `pivot_wider` 
+
+Make up some data!
+
+```{r}
+analysis_result = 
+  tibble(
+    group = c("treatment", "treatment", "placebo", "placebo"),
+    time = c("pre", "post", "pre", "post"),
+    mean = c(4, 8, 2, 1.5)
+  )
+
+analysis_result %>% 
+  pivot_wider(
+    names_from = "time",
+    values_from = "mean"
+  )
 ```
 
