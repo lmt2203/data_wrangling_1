@@ -15,15 +15,55 @@ library(janitor)
 ```{r loading_data}
 options (tibble.print_min = 3)
 
-litters_data = read_csv("data/FAS_litters.csv", 
+litters_df = read_csv("data/FAS_litters.csv", 
                       col_types = "ccddiiii")
-litters_data = clean_names(litters_data)
+litters_df = clean_names(litters_df)
 
-pups_data = read_csv("data/FAS_pups.csv",
+pups_df = read_csv("data/FAS_pups.csv",
                    col_types = "ciiiii")
-pups_data = clean_names(pups_data)
+pups_df = clean_names(pups_df)
 ```
 
+## `select` 
 
+Choose some columns and not others.
 
+```{r}
+select(litters_df, group, gd0_weight)
+```
+
+Select from gd0_weight to gd_of_birth
+```{r}
+select(litters_df, group, gd0_weight: gd_of_birth)
+```
+
+Specify what we want to lose (litter number)
+```{r}
+select(litters_df, -litter_number)
+```
+
+Renaming columns
+```{r}
+select(litters_df, gd_weight_0 = gd0_weight, gd_weight_18 = gd18_weight)
+```
+
+Can also use rename()
+```{r}
+rename(litters_df, gd_weight_0 = gd0_weight, gd_weight_18 = gd18_weight)
+```
+
+Select helpers
+
+```{r}
+select(litters_df, starts_with("gd"))
+```
+
+```{r}
+select(litters_df, litter_number, everything())
+```
+
+Relocate litter number columne to the beginning
+```{r}
+relocate(litters_df, litter_number)
+```
 
