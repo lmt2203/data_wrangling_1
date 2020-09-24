@@ -449,3 +449,24 @@ litters_df =
     ##   `Pups dead @ birth` = col_double(),
     ##   `Pups survive` = col_double()
     ## )
+
+Learning Assessment: Writing a chain of commands
+
+``` r
+pups_df = 
+  read_csv("data/FAS_pups.csv") %>% 
+  janitor::clean_names() %>% 
+  filter(sex == 1) %>% 
+  select(-pd_ears) %>% 
+  mutate (pd_pivot_gt7 = pd_pivot >= 7)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   `Litter Number` = col_character(),
+    ##   Sex = col_double(),
+    ##   `PD ears` = col_double(),
+    ##   `PD eyes` = col_double(),
+    ##   `PD pivot` = col_double(),
+    ##   `PD walk` = col_double()
+    ## )

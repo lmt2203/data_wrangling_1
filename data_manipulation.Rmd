@@ -148,3 +148,16 @@ litters_df =
   drop_na(gd0_weight)
 ```
 
+Learning Assessment: Writing a chain of commands
+
+
+```{r}
+pups_df = 
+  read_csv("data/FAS_pups.csv") %>% 
+  janitor::clean_names() %>% 
+  filter(sex == 1) %>% 
+  select(-pd_ears) %>% 
+  mutate (pd_pivot_gt7 = pd_pivot >= 7)
+
+```
+
