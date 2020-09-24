@@ -1,5 +1,5 @@
 ---
-title: "data_manipulation"
+title: "Data Manipulation"
 author: "Linh Tran"
 date: "9/23/2020"
 output: github_document
@@ -12,15 +12,18 @@ library(janitor)
 
 ## Loading data and cleaning column names
 
-```{r}
+```{r loading_data}
 options (tibble.print_min = 3)
 
-litters_df = read_csv("data/FAS_litters.csv")
-clean_names(litters_df)
+litters_data = read_csv("data/FAS_litters.csv", 
+                      col_types = "ccddiiii")
+litters_data = clean_names(litters_data)
 
-pups_df = read_csv("data/FAS_pups.csv")
-clean_names(litters_df)
-
-
+pups_data = read_csv("data/FAS_pups.csv",
+                   col_types = "ciiiii")
+pups_data = clean_names(pups_data)
 ```
+
+
+
 
