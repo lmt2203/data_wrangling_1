@@ -7,5 +7,20 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(janitor)
+```
+
+## Loading data and cleaning column names
+
+```{r}
+options (tibble.print_min = 3)
+
+litters_df = read_csv("data/FAS_litters.csv")
+clean_names(litters_df)
+
+pups_df = read_csv("data/FAS_pups.csv")
+clean_names(litters_df)
+
+
 ```
 
