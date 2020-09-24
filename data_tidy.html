@@ -427,6 +427,30 @@ analysis_result %&gt;%
 ## 1 treatment     4   8  
 ## 2 placebo       2   1.5</code></pre>
 </div>
+<div id="binding-rows" class="section level2">
+<h2>Binding rows</h2>
+<p>Using the LotR data</p>
+<p>First step: import each table</p>
+<pre class="r"><code>fellowship_ring = 
+  readxl::read_excel(&quot;data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;% 
+  mutate(movie = &quot;fellowship_ring&quot;)</code></pre>
+<pre class="r"><code>two_towers = 
+  readxl::read_excel(&quot;data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) %&gt;% 
+  mutate(movie = &quot;two_towers&quot;)</code></pre>
+<pre class="r"><code>return_king = 
+  readxl::read_excel(&quot;data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;% 
+  mutate(movie = &quot;return_king&quot;)</code></pre>
+<p>Bind all the rows together</p>
+<pre class="r"><code>lotr_tidy = 
+  bind_rows(fellowship_ring, two_towers, return_king) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  relocate(movie) %&gt;% 
+  pivot_longer(
+    female:male,
+    names_to = &quot;gender&quot;,
+    values_to = &quot;words&quot;
+  )</code></pre>
+</div>
 
 
 
