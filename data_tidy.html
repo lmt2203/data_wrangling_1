@@ -378,6 +378,34 @@ summary {
 <pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
+<div id="pivot_longer" class="section level2">
+<h2><code>pivot_longer</code></h2>
+<p>Load the PULSE data</p>
+<pre class="r"><code>pulse_data =
+  haven::read_sas(&quot;data/public_pulse_data.sas7bdat&quot;) %&gt;% 
+  janitor::clean_names()</code></pre>
+<p>Go from wide format to long format</p>
+<pre class="r"><code>pulse_data_tidy = 
+  pulse_data %&gt;% 
+  pivot_longer(
+    bdi_score_bl:bdi_score_12m,
+    names_to = &quot;visit&quot;,
+    names_prefix = &quot;bdi_score_&quot;,
+    values_to = &quot;bdi&quot;
+  )</code></pre>
+<p>Rewrite, combine, and extend (to add a mutate)</p>
+<pre class="r"><code>pulse_data =
+  haven::read_sas(&quot;data/public_pulse_data.sas7bdat&quot;) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  pivot_longer(
+    bdi_score_bl:bdi_score_12m,
+    names_to = &quot;visit&quot;,
+    names_prefix = &quot;bdi_score_&quot;,
+    values_to = &quot;bdi&quot;
+  ) %&gt;% 
+  relocate(id, visit) %&gt;% 
+  mutate(visit = recode (visit, &quot;bl&quot; = &quot;00m&quot;))</code></pre>
+</div>
 
 
 
