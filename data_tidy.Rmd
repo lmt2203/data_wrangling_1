@@ -77,6 +77,8 @@ analysis_result =
     mean = c(4, 8, 2, 1.5)
   )
 
+print(analysis_result)
+
 analysis_result %>% 
   pivot_wider(
     names_from = "time",
@@ -88,7 +90,7 @@ analysis_result %>%
 
 Using the LotR data
 
-First step: import each table 
+First step: import each table and add a variable to each dataframe indicating the movie. 
 
 ```{r}
 fellowship_ring = 
@@ -108,7 +110,7 @@ return_king =
   mutate(movie = "return_king")
 ```
 
-Bind all the rows together
+Stack the tables together using `bind_rows` and tidy the result
 
 ```{r binding_rows}
 lotr_tidy = 
@@ -120,23 +122,31 @@ lotr_tidy =
     names_to = "gender",
     values_to = "words"
   )
+print(lotr_tidy)
 ```
 
-## Joining datasets
+## Joining datasets - combining two tables (Combining 3 or more is done by step-by-step using the same ideas)
 
 Import and clean the FAS datasets.
 
 ```{r}
 pups_df =
-  read_csv("data/FAS_pups.csv") %>% 
+  read_csv("data/FAS_pups.csv", col_types = "ciiiii") %>% 
   janitor::clean_names() %>% 
   mutate(sex = recode(sex, `1` = "male", `2` = "female"))
 
 litters_df =
-  read_csv("data/FAS_litters.csv") %>% 
+  read_csv("data/FAS_litters.csv", col_types = "ccddiiii") %>% 
   janitor::clean_names() %>%  
   relocate(litter_number) %>% 
-  separate(group, into = c("dose", "day_of_tx"), sep = 3)                         #seperate a column into multiple column
+  separate(group, into = c("dose", "day_of_tx"), sep = 3) %>% 
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    dose = str_to_lower(dose)
+  )
+
+fas_data = left_join(pups_df, litters_df, by = "litter_number")
+fas_data
 ```
 
 Next up, time to join them!
@@ -146,6 +156,42 @@ fas_df =
   left_join(pups_df, litters_df, by = "litter_number") %>% 
   arrange(litter_number) %>% 
   relocate(litter_number, dose, day_of_tx)
-  
+```
+
+## Learning Assessment - Joining datasets
+
+```{r}
+surv_os = read_csv("data/surv_os.csv", col_types = "cc") %>% 
+  rename("UNI" = "What is your UNI?",  "operating_system" = "What operating system do you use?") 
+
+surv_program_git = read_csv("data/surv_program_git.csv", col_types = "ccc") %>% 
+  rename("UNI" = "What is your UNI?",
+         "degree" = "What is your degree program?", 
+         "experience_with_git" = "Which most accurately describes your experience with Git?")
+
+surv_data_left = left_join (surv_os, surv_program_git, by = "UNI")
+surv_data_right = right_join(surv_os, surv_program_git)
+surv_data_inner = inner_join(surv_os, surv_program_git)
+```
+
+Solution
+
+```{r}
+surv_os = read_csv("data/surv_os.csv") %>% 
+  janitor::clean_names() %>% 
+  rename(id = what_is_your_uni, os = what_operating_system_do_you_use)
+
+surv_pr_git = read_csv("data/surv_program_git.csv") %>% 
+  janitor::clean_names() %>% 
+  rename(
+    id = what_is_your_uni, 
+    prog = what_is_your_degree_program,
+    git_exp = which_most_accurately_describes_your_experience_with_git)
+
+left_join(surv_os, surv_pr_git)
+inner_join(surv_os, surv_pr_git)
+anti_join(surv_os, surv_pr_git)
+anti_join(surv_pr_git, surv_os)
+
 ```
 
