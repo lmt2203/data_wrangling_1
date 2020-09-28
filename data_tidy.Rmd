@@ -8,9 +8,8 @@ output: html_document
 ```{r setup}
 library(tidyverse)
 library(dplyr)
+library(haven)
 ```
-
-## `pivot_longer` - wide format to long format
 
 Load the PULSE data
 
@@ -20,7 +19,7 @@ pulse_data =
   janitor::clean_names()
 ```
 
-Go from wide format to long format
+## `pivot_longer` - wide format to long format
 
 ```{r}
 pulse_data_tidy = 
@@ -31,9 +30,10 @@ pulse_data_tidy =
     names_prefix = "bdi_score_",
     values_to = "bdi"
   )
+pulse_data_tidy
 ```
 
-Rewrite, combine, and extend (to add a mutate)
+Changing `bl` to `00m` for consistency across visits, converting `visit` to a numeric variable using `mutate`
 
 ```{r}
 pulse_data =
@@ -47,11 +47,27 @@ pulse_data =
   ) %>% 
   relocate(id, visit) %>% 
   mutate(visit = recode (visit, "bl" = "00m"))
+pulse_data
+print(pulse_data, n = 12)
+```
+
+## Learning Assessment - how to use `pivot_longer`
+
+```{r}
+litters_long = read_csv("data/FAS_litters.csv", col_types = "ccddiiii") %>% 
+  janitor::clean_names() %>% 
+  select (litter_number, ends_with ("weight")) %>% 
+  pivot_longer(
+    gd0_weight : gd18_weight,
+    names_to = "gd",
+    values_to = "weight") %>% 
+  mutate(gd = recode(gd, "gd0_weight" = 0, "gd18_weight" = 18))
+litters_long
 ```
 
 ## `pivot_wider` 
 
-Make up some data!
+Let's take a short digression into untidying data. The code below creates a tidy dataset that could result from an analysis. 
 
 ```{r}
 analysis_result = 

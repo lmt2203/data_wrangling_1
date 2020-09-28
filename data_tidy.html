@@ -370,22 +370,22 @@ summary {
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
 ## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
 ## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
 ## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(dplyr)</code></pre>
-<div id="pivot_longer---wide-format-to-long-format" class="section level2">
-<h2><code>pivot_longer</code> - wide format to long format</h2>
+<pre class="r"><code>library(dplyr)
+library(haven)</code></pre>
 <p>Load the PULSE data</p>
 <pre class="r"><code>pulse_data =
   haven::read_sas(&quot;data/public_pulse_data.sas7bdat&quot;) %&gt;% 
   janitor::clean_names()</code></pre>
-<p>Go from wide format to long format</p>
+<div id="pivot_longer---wide-format-to-long-format" class="section level2">
+<h2><code>pivot_longer</code> - wide format to long format</h2>
 <pre class="r"><code>pulse_data_tidy = 
   pulse_data %&gt;% 
   pivot_longer(
@@ -393,8 +393,23 @@ summary {
     names_to = &quot;visit&quot;,
     names_prefix = &quot;bdi_score_&quot;,
     values_to = &quot;bdi&quot;
-  )</code></pre>
-<p>Rewrite, combine, and extend (to add a mutate)</p>
+  )
+pulse_data_tidy</code></pre>
+<pre><code>## # A tibble: 4,348 x 5
+##       id   age sex   visit   bdi
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1 10003  48.0 male  bl        7
+##  2 10003  48.0 male  01m       1
+##  3 10003  48.0 male  06m       2
+##  4 10003  48.0 male  12m       0
+##  5 10015  72.5 male  bl        6
+##  6 10015  72.5 male  01m      NA
+##  7 10015  72.5 male  06m      NA
+##  8 10015  72.5 male  12m      NA
+##  9 10022  58.5 male  bl       14
+## 10 10022  58.5 male  01m       3
+## # … with 4,338 more rows</code></pre>
+<p>Changing <code>bl</code> to <code>00m</code> for consistency across visits, converting <code>visit</code> to a numeric variable using <code>mutate</code></p>
 <pre class="r"><code>pulse_data =
   haven::read_sas(&quot;data/public_pulse_data.sas7bdat&quot;) %&gt;% 
   janitor::clean_names() %&gt;% 
@@ -405,11 +420,69 @@ summary {
     values_to = &quot;bdi&quot;
   ) %&gt;% 
   relocate(id, visit) %&gt;% 
-  mutate(visit = recode (visit, &quot;bl&quot; = &quot;00m&quot;))</code></pre>
+  mutate(visit = recode (visit, &quot;bl&quot; = &quot;00m&quot;))
+pulse_data</code></pre>
+<pre><code>## # A tibble: 4,348 x 5
+##       id visit   age sex     bdi
+##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1 10003 00m    48.0 male      7
+##  2 10003 01m    48.0 male      1
+##  3 10003 06m    48.0 male      2
+##  4 10003 12m    48.0 male      0
+##  5 10015 00m    72.5 male      6
+##  6 10015 01m    72.5 male     NA
+##  7 10015 06m    72.5 male     NA
+##  8 10015 12m    72.5 male     NA
+##  9 10022 00m    58.5 male     14
+## 10 10022 01m    58.5 male      3
+## # … with 4,338 more rows</code></pre>
+<pre class="r"><code>print(pulse_data, n = 12)</code></pre>
+<pre><code>## # A tibble: 4,348 x 5
+##       id visit   age sex     bdi
+##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1 10003 00m    48.0 male      7
+##  2 10003 01m    48.0 male      1
+##  3 10003 06m    48.0 male      2
+##  4 10003 12m    48.0 male      0
+##  5 10015 00m    72.5 male      6
+##  6 10015 01m    72.5 male     NA
+##  7 10015 06m    72.5 male     NA
+##  8 10015 12m    72.5 male     NA
+##  9 10022 00m    58.5 male     14
+## 10 10022 01m    58.5 male      3
+## 11 10022 06m    58.5 male      8
+## 12 10022 12m    58.5 male     NA
+## # … with 4,336 more rows</code></pre>
+</div>
+<div id="learning-assessment---how-to-use-pivot_longer" class="section level2">
+<h2>Learning Assessment - how to use <code>pivot_longer</code></h2>
+<pre class="r"><code>litters_long = read_csv(&quot;data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  select (litter_number, ends_with (&quot;weight&quot;)) %&gt;% 
+  pivot_longer(
+    gd0_weight : gd18_weight,
+    names_to = &quot;gd&quot;,
+    values_to = &quot;weight&quot;) %&gt;% 
+  mutate(gd = recode(gd, &quot;gd0_weight&quot; = 0, &quot;gd18_weight&quot; = 18))
+litters_long</code></pre>
+<pre><code>## # A tibble: 98 x 3
+##    litter_number    gd weight
+##    &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt;
+##  1 #85               0   19.7
+##  2 #85              18   34.7
+##  3 #1/2/95/2         0   27  
+##  4 #1/2/95/2        18   42  
+##  5 #5/5/3/83/3-3     0   26  
+##  6 #5/5/3/83/3-3    18   41.4
+##  7 #5/4/2/95/2       0   28.5
+##  8 #5/4/2/95/2      18   44.1
+##  9 #4/2/95/3-3       0   NA  
+## 10 #4/2/95/3-3      18   NA  
+## # … with 88 more rows</code></pre>
 </div>
 <div id="pivot_wider" class="section level2">
 <h2><code>pivot_wider</code></h2>
-<p>Make up some data!</p>
+<p>Let’s take a short digression into untidying data. The code below creates a tidy dataset that could result from an analysis.</p>
 <pre class="r"><code>analysis_result = 
   tibble(
     group = c(&quot;treatment&quot;, &quot;treatment&quot;, &quot;placebo&quot;, &quot;placebo&quot;),
