@@ -127,6 +127,9 @@ Next up, time to join them!
 
 ```{r}
 fas_df = 
-  left_join(pups_df, litters_df, by = "litter_number)
+  left_join(pups_df, litters_df, by = "litter_number") %>% 
+  arrange(litter_number) %>% 
+  relocate(litter_number, dose, day_of_tx)
+  
 ```
 
