@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup}
 library(tidyverse)
+library(dplyr)
 ```
 
 ## `pivot_longer` - wide format to long format
@@ -107,7 +108,7 @@ lotr_tidy =
 
 ## Joining datasets
 
-Import the FAS datasets.
+Import and clean the FAS datasets.
 
 ```{r}
 pups_df =
@@ -117,8 +118,15 @@ pups_df =
 
 litters_df =
   read_csv("data/FAS_litters.csv") %>% 
-  janitor::clean_names() %>% 
-  relocate(litter_number)
+  janitor::clean_names() %>%  
+  relocate(litter_number) %>% 
+  separate(group, into = c("dose", "day_of_tx"), sep = 3)                         #seperate a column into multiple column
 ```
 
-Take the pups data and pull data from litters to it
+Next up, time to join them!
+
+```{r}
+fas_df = 
+  left_join(pups_df, litters_df, by = "litter_number)
+```
+
